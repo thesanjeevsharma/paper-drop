@@ -10,7 +10,7 @@ const Login = () => {
     const navigate = useNavigate();
 
     const handleLogin = () => {
-        navigate('/', { replace: true })
+        navigate('/playground', { replace: true })
     }
 
     return (
