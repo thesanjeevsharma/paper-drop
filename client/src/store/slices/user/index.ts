@@ -1,10 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "src/store";
 
-type Coordinates = {
-  latitude: number;
-  longitude: number;
-};
+import type { Coordinates } from "src/constants/types";
 
 type UserState = {
   token: null | string;
