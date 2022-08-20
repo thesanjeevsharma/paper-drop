@@ -21,3 +21,21 @@ export const userLogin = async (userDetails: any): Promise<any> => {
 
    return response;
 };
+
+export const createDrop = async (dropDetails: any) => {
+   return {
+      success: true,
+      message: 'Message dropped!',
+      data: {
+         drop: dropDetails,
+      },
+   };
+
+   const res: any = await axios.post(API_URLS.DROP_MESSAGE, dropDetails, {
+      headers: HEADERS,
+   });
+
+   const response = res.json();
+
+   return response;
+};

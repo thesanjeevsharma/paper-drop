@@ -1,44 +1,53 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { RootState } from "src/store";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { RootState } from 'src/store';
 
-import type { Drop } from "src/constants/types";
+import type { Drop } from 'src/constants/types';
+import { createDrop } from 'src/services/api';
 
 type DropsState = {
-  nearbyDrops: Drop[];
-  myDrops: Drop[];
+   nearbyDrops: Drop[];
+   myDrops: Drop[];
 };
 
 const initialState: DropsState = {
-  nearbyDrops: [],
-  myDrops: [],
+   nearbyDrops: [],
+   myDrops: [],
 };
 
-// export const loadUser = createAsyncThunk(
-//   "user/loadUser",
-//   async (token: string, { rejectWithValue }) => {
-//     try {
-//       const response = await userDetailsApi(token);
-//       if (response.success) {
-//         return response.data;
-//       }
-//       throw Error(response.message);
-//     } catch (error: any) {
-//       return rejectWithValue(error.message);
-//     }
-//   }
-// );
+export const dropMessage = createAsyncThunk(
+   'drop/dropMessage',
+   async ({ dropDetails, onSuccess, onFailure }: any, { rejectWithValue }) => {
+      try {
+         const response = await createDrop(dropDetails);
+         if (response.success) {
+            onSuccess();
+            return response.data;
+         }
+
+         onFailure();
+         throw Error(response.message);
+      } catch (error: any) {
+         return rejectWithValue(error.message);
+      }
+   }
+);
 
 export const dropsSlice = createSlice({
-  initialState,
-  name: "drops",
-  reducers: {
-    setNearbyDrops: (state, action) => {
-      state.nearbyDrops = action.payload.drops;
-    },
-    setMyDrops: (state, action) => {
-      state.myDrops = action.payload.drops;
-    },
-  },
+   initialState,
+   name: 'drops',
+   reducers: {
+      setNearbyDrops: (state, action) => {
+         state.nearbyDrops = action.payload.drops;
+      },
+      setMyDrops: (state, action) => {
+         state.myDrops = action.payload.drops;
+      },
+   },
+   extraReducers: (builder) => {
+      builder.addCase(dropMessage.fulfilled, (state, action) => {
+         state.myDrops.unshift(action.payload.drop);
+      });
+   },
 });
 
 export const { setMyDrops, setNearbyDrops } = dropsSlice.actions;
