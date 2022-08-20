@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Button } from '@chakra-ui/react';
-import GoogleLogin from 'react-google-login';
+import GoogleLogin from '@leecheuk/react-google-login';
 import { login } from 'src/store/slices/user';
 import { AppDispatch } from 'src/store';
 
