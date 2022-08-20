@@ -1,10 +1,21 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { Button } from '@chakra-ui/react';
 import GoogleLogin from 'react-google-login';
+import { login } from 'src/store/slices/user';
+import { AppDispatch } from 'src/store';
 
-const LoginButton = () => {
+type Props = {
+   onSuccess: () => void;
+};
+
+const LoginButton = ({ onSuccess }: Props) => {
+   const dispatch = useDispatch<AppDispatch>();
+
    const responseGoogle = (response: any) => {
-      console.log(response);
+      if (response) {
+         dispatch(login({ googleResponse: response, onSuccess }));
+      }
    };
 
    return (

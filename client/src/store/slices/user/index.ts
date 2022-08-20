@@ -1,44 +1,63 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { RootState } from "src/store";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { RootState } from 'src/store';
 
-import type { Coordinates } from "src/constants/types";
+import type { Coordinates } from 'src/constants/types';
+import { userLogin } from 'src/services/api';
 
 type UserState = {
-  token: null | string;
-  location: null | Coordinates;
+   token: null | string;
+   location: null | Coordinates;
+   userDetails: any;
 };
 
 const initialState: UserState = {
-  location: null,
-  token: null,
+   location: null,
+   token: null,
+   userDetails: null,
 };
 
-// export const loadUser = createAsyncThunk(
-//   "user/loadUser",
-//   async (token: string, { rejectWithValue }) => {
-//     try {
-//       const response = await userDetailsApi(token);
-//       if (response.success) {
-//         return response.data;
-//       }
-//       throw Error(response.message);
-//     } catch (error: any) {
-//       return rejectWithValue(error.message);
-//     }
-//   }
-// );
+export const login = createAsyncThunk(
+   'user/login',
+   async (
+      { googleResponse, onSuccess, onFailure }: any,
+      { rejectWithValue }
+   ) => {
+      try {
+         const response = await userLogin(googleResponse);
+         if (response.success) {
+            onSuccess();
+            return response.data;
+         }
+         onFailure();
+         throw Error(response.message);
+      } catch (error: any) {
+         return rejectWithValue(error.message);
+      }
+   }
+);
 
 export const userSlice = createSlice({
-  initialState,
-  name: "user",
-  reducers: {
-    setLocation: (state, action) => {
-      state.location = action.payload.coordinates;
-    },
-    setToken: (state, action) => {
-      state.token = action.payload.token;
-    },
-  },
+   initialState,
+   name: 'user',
+   reducers: {
+      setLocation: (state, action) => {
+         state.location = action.payload.coordinates;
+      },
+      setToken: (state, action) => {
+         state.token = action.payload.token;
+      },
+   },
+   extraReducers: (builder) => {
+      builder.addCase(login.fulfilled, (state, action) => {
+         state.token = action.payload.token;
+         state.userDetails = action.payload.user;
+         localStorage.setItem('token', action.payload.token);
+      });
+      builder.addCase(login.rejected, (state) => {
+         state.userDetails = null;
+         state.token = null;
+      });
+   },
 });
 
 export const { setLocation, setToken } = userSlice.actions;
