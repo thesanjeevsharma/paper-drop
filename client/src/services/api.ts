@@ -43,11 +43,13 @@ export const createDrop = async (dropDetails: any) => {
 };
 
 export const fetchNearbyDrops = async (currentLocation: Coordinates) => {
+   const d = new Date();
+
    const sampleDrops: Drop[] = Array(20)
       .fill(null)
       .map((_) => ({
          id: Math.random().toString(),
-         expiresAt: '',
+         expiresAt: d.toISOString(),
          location: {
             latitude:
                currentLocation.latitude -

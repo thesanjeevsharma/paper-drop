@@ -5,13 +5,17 @@ const deg2rad = (deg: number): number => {
    return deg * (Math.PI / 180);
 };
 
-const getDistanceFromLatLon = (
-   lat1: number,
-   lon1: number,
-   lat2: number,
-   lon2: number
-): number => {
+export const getDistanceFromLatLon = ({
+   location1,
+   location2,
+}: {
+   location1: Coordinates;
+   location2: Coordinates;
+}): number => {
    const R = 6371; // Radius of the earth in km
+
+   const { latitude: lat1, longitude: lon1 } = location1;
+   const { latitude: lat2, longitude: lon2 } = location2;
 
    const dLat = deg2rad(lat2 - lat1);
    const dLon = deg2rad(lon2 - lon1);
@@ -36,14 +40,10 @@ export const filterRangeDrops = (
    const rangeDrops: Drop[] = [];
 
    for (const drop of drops) {
-      const distance = getDistanceFromLatLon(
-         drop.location.latitude,
-         drop.location.longitude,
-         currentLocation.latitude,
-         currentLocation.longitude
-      );
-
-      console.log(distance);
+      const distance = getDistanceFromLatLon({
+         location1: drop.location,
+         location2: currentLocation,
+      });
 
       if (distance < RANGE_DROPS_DISTANCE) {
          rangeDrops.push(drop);
