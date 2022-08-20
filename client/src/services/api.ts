@@ -42,7 +42,7 @@ export const createDrop = async (dropDetails: any) => {
 };
 
 export const fetchNearbyDrops = async (currentLocation: Coordinates) => {
-   const sampleDrops: Drop[] = Array(10)
+   const sampleDrops: Drop[] = Array(20)
       .fill(null)
       .map((_) => ({
          id: Math.random().toString(),

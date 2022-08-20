@@ -71,7 +71,7 @@ const DropMap = () => {
             clearInterval(intervalId.current);
          }
       };
-   }, []);
+   }, [setCurrentLocation]);
 
    if (!currentLocation) {
       return <>"Loading..."</>;

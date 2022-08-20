@@ -1,1 +1,1 @@
-export const RANGE_DROPS_DISTANCE = 400;
+export const RANGE_DROPS_DISTANCE = 200;
