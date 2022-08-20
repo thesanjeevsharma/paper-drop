@@ -1,3 +1,4 @@
+/* eslint-disable no-unreachable */
 import axios from 'axios';
 import { Coordinates, Drop } from 'src/constants/types';
 import { API_URLS } from 'src/constants/urls';
