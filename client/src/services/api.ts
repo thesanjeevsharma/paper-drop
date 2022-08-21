@@ -1,9 +1,15 @@
 /* eslint-disable no-unreachable */
 import axios from 'axios';
-import { Coordinates, Drop } from 'src/constants/types';
+import { Coordinates, Drop, DropDetails } from 'src/constants/types';
 import { API_URLS } from 'src/constants/urls';
 
 const HEADERS = { 'Content-Type': 'application/json' };
+
+type ApiResponse<T> = {
+   success: boolean;
+   message: string;
+   data?: T;
+};
 
 export const userLogin = async (userDetails: any): Promise<any> => {
    return {
@@ -55,7 +61,7 @@ export const fetchNearbyDrops = async (currentLocation: Coordinates) => {
                currentLocation.latitude -
                parseFloat((Math.random() * 0.005).toPrecision(3)),
             longitude:
-               currentLocation.longitude -
+               currentLocation.longitude +
                parseFloat((Math.random() * 0.005).toPrecision(3)),
          },
       }));
@@ -76,6 +82,43 @@ export const fetchNearbyDrops = async (currentLocation: Coordinates) => {
          headers: HEADERS,
       }
    );
+
+   const response = res.json();
+
+   return response;
+};
+
+type FetchDropData = {
+   drop: DropDetails;
+};
+
+export const fetchDrop = async (
+   dropId: string
+): Promise<ApiResponse<FetchDropData>> => {
+   const d = new Date();
+   d.setMonth(d.getMonth() + 1);
+
+   return Promise.resolve({
+      success: true,
+      message: 'Drop fetched!',
+      data: {
+         drop: {
+            id: dropId,
+            location: {
+               latitude: 1,
+               longitude: 1,
+            },
+            expiresAt: d.toISOString(),
+            author: 'Anonymous',
+            message: 'We are hosting a party here at 8PM!',
+            readByCount: 8,
+         },
+      },
+   });
+
+   const res: any = await axios.get(API_URLS.FETCH_DROP + `/${dropId}`, {
+      headers: HEADERS,
+   });
 
    const response = res.json();
 
