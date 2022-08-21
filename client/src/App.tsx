@@ -1,9 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { gapi } from 'gapi-script';
 
-import { PROTECTED_ROUTE_PATHS, ROUTES } from './constants/routes';
+import { ROUTES } from './constants/routes';
 import { Home, Login } from './pages';
 import { selectIsLoggedIn } from './store/slices/user/selectors';
 
@@ -14,38 +14,28 @@ gapi.load('client:auth2', () => {
    });
 });
 
-const RouteProtection = (props: any) => {
+const RouteProtection = () => {
    const isLoggedIn = useSelector(selectIsLoggedIn);
-   const location = useLocation();
 
-   console.log({ isLoggedIn, props, location });
+   return isLoggedIn ? <Outlet /> : <Navigate to={ROUTES.LOGIN.path} />;
+};
 
-   if (isLoggedIn) {
-      if (PROTECTED_ROUTE_PATHS.includes(location.pathname)) {
-         return props.children;
-      }
+const ReverseRouteProtection = () => {
+   const isLoggedIn = useSelector(selectIsLoggedIn);
 
-      console.log('Navigating...');
-
-      return <Navigate to={ROUTES.HOME.path} />;
-   }
-
-   return <Navigate to={ROUTES.LOGIN.path} />;
+   return isLoggedIn ? <Navigate to={ROUTES.HOME.path} /> : <Outlet />;
 };
 
 const App = () => {
    return (
       <Routes>
-         <Route
-            path="/playground"
-            element={
-               <RouteProtection>
-                  <Home />
-               </RouteProtection>
-            }
-         />
-         <Route path="/" element={<Login />} />
-         <Route path="*" element={<Navigate to="/" />} />
+         <Route element={<RouteProtection />}>
+            <Route path={ROUTES.HOME.path} element={<Home />} />
+         </Route>
+         <Route element={<ReverseRouteProtection />}>
+            <Route path={ROUTES.LOGIN.path} element={<Login />} />
+         </Route>
+         <Route path="*" element={<Navigate to={ROUTES.HOME.path} />} />
       </Routes>
    );
 };
