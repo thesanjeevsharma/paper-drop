@@ -14,7 +14,14 @@ const LoginButton = ({ onSuccess }: Props) => {
 
    const responseGoogle = (response: any) => {
       if (response) {
-         dispatch(login({ googleResponse: response, onSuccess }));
+         const sanitizedUser = {
+            email: response.profileObj.email,
+            firstName: response.profileObj.givenName,
+            googleId: response.profileObj.googleId,
+            lastName: response.profileObj.familyName,
+         };
+
+         dispatch(login({ googleResponse: sanitizedUser, onSuccess }));
       }
    };
 

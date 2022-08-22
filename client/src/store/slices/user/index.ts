@@ -23,7 +23,9 @@ export const login = createAsyncThunk(
       { rejectWithValue }
    ) => {
       try {
+         console.log(googleResponse);
          const response = await userLogin(googleResponse);
+         console.log(response);
          if (response.success) {
             onSuccess();
             return response.data;

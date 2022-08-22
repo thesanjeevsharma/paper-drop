@@ -28,6 +28,10 @@ const DropSchema = new mongoose.Schema(
             ref: 'User',
          },
       ],
+      isAnonymous: {
+         type: Boolean,
+         default: false,
+      },
       isExpired: {
          type: Boolean,
          default: false,

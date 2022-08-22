@@ -1,18 +1,43 @@
 const router = require('express').Router();
 
+const jwt = require('../middlewares/jwt');
 const Drop = require('../models/drop.model');
 
-router.post('/', async (req, res, next) => {
+router.post('/', jwt.authenticate, async (req, res, next) => {
    try {
-      res.status(200).json({
+      const totalDrops = await Drop.find({
+         userId: req.decoded.id,
+         isDeleted: false,
+         isExpired: false,
+      }).count();
+
+      if (totalDrops > 10) {
+         return res.json({
+            success: false,
+            message:
+               'Max drop limit reached! Wait for some drops to expire or delete some drops.',
+            data: null,
+         });
+      }
+
+      const { message, isAnonymous, location } = req.body;
+
+      const drop = new Drop({
+         message,
+         isAnonymous,
+         location,
+         userId: req.decoded.id,
+      });
+      await drop.save();
+
+      return res.json({
          success: true,
-         message: 'User logged in!',
+         message: 'Message dropped!',
          data: {
-            user: {
-               firstName: user.firstName,
-               lastName: user.lastName,
+            drop: {
+               _id: drop._id,
+               location,
             },
-            token,
          },
       });
    } catch (error) {

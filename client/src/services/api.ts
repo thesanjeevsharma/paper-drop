@@ -11,41 +11,32 @@ type ApiResponse<T> = {
    data?: T;
 };
 
-export const userLogin = async (userDetails: any): Promise<any> => {
+const getAuthHeaders = (token: string) => {
    return {
-      success: true,
-      message: 'User signed up!',
-      data: {
-         token: '123',
-         user: userDetails,
-      },
+      ...HEADERS,
+      Authorization: `Bearer ${token}`,
    };
-
-   const res: any = await axios.post(API_URLS.CREATE_ACCOUNT, userDetails, {
-      headers: HEADERS,
-   });
-
-   const response = res.json();
-
-   return response;
 };
 
-export const createDrop = async (dropDetails: any) => {
-   return {
-      success: true,
-      message: 'Message dropped!',
-      data: {
-         drop: dropDetails,
-      },
-   };
+export const userLogin = async (userDetails: any): Promise<any> => {
+   const response: any = await axios.post(
+      API_URLS.CREATE_ACCOUNT,
+      userDetails,
+      {
+         headers: HEADERS,
+      }
+   );
 
-   const res: any = await axios.post(API_URLS.DROP_MESSAGE, dropDetails, {
-      headers: HEADERS,
+   return response.data;
+};
+
+export const createDrop = async (dropDetails: any, token: string) => {
+   console.log(dropDetails);
+   const response: any = await axios.post(API_URLS.DROP_MESSAGE, dropDetails, {
+      headers: getAuthHeaders(token),
    });
 
-   const response = res.json();
-
-   return response;
+   return response.data;
 };
 
 export const fetchNearbyDrops = async (currentLocation: Coordinates) => {

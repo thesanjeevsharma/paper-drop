@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 
 const User = require('../models/user.model');
 
-router.post('/google-login', async (req, res, next) => {
+router.post('/', async (req, res, next) => {
    try {
       const { email, firstName, lastName, googleId } = req.body;
 

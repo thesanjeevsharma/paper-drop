@@ -1,12 +1,15 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+const logger = require('morgan');
 const cors = require('cors');
 
 const UserRouter = require('./routers/user.router');
 const DropRouter = require('./routers/drop.router');
 
 const app = express();
+
+app.use(logger('dev'));
 
 // db connection
 mongoose

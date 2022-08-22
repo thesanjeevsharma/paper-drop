@@ -24,15 +24,20 @@ export const dropMessage = createAsyncThunk(
       { getState, rejectWithValue }
    ) => {
       try {
-         const response = await createDrop(dropDetails);
          const state: any = getState();
+
+         const dropDetailsWithLocation = {
+            ...dropDetails,
+            location: state.user.location,
+         };
+         const response = await createDrop(
+            dropDetailsWithLocation,
+            state.user.token
+         );
 
          if (response.success) {
             onSuccess();
-            return {
-               ...response.data,
-               currentLocation: state.user.currentLocation,
-            };
+            return response.data;
          }
 
          onFailure();
