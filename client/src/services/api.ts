@@ -39,44 +39,20 @@ export const createDrop = async (dropDetails: any, token: string) => {
    return response.data;
 };
 
-export const fetchNearbyDrops = async (currentLocation: Coordinates) => {
-   const d = new Date();
+export const fetchNearbyDrops = async (
+   currentLocation: Coordinates,
+   token: string
+) => {
+   const { longitude, latitude } = currentLocation;
 
-   const sampleDrops: Drop[] = Array(20)
-      .fill(null)
-      .map((_) => ({
-         id: Math.random().toString(),
-         expiresAt: d.toISOString(),
-         location: {
-            latitude:
-               currentLocation.latitude -
-               parseFloat((Math.random() * 0.005).toPrecision(3)),
-            longitude:
-               currentLocation.longitude +
-               parseFloat((Math.random() * 0.005).toPrecision(3)),
-         },
-      }));
-
-   return {
-      success: true,
-      message: 'Drops fetched!',
-      data: {
-         drops: sampleDrops,
-         currentLocation,
-      },
-   };
-
-   const res: any = await axios.post(
-      API_URLS.FETCH_NEARBY_DROPS,
-      currentLocation,
+   const response: any = await axios.get(
+      API_URLS.FETCH_NEARBY_DROPS + `?lon=${longitude}&lat=${latitude}`,
       {
-         headers: HEADERS,
+         headers: getAuthHeaders(token),
       }
    );
 
-   const response = res.json();
-
-   return response;
+   return response.data;
 };
 
 type FetchDropData = {
@@ -84,34 +60,12 @@ type FetchDropData = {
 };
 
 export const fetchDrop = async (
-   dropId: string
+   dropId: string,
+   token: string
 ): Promise<ApiResponse<FetchDropData>> => {
-   const d = new Date();
-   d.setMonth(d.getMonth() + 1);
-
-   return Promise.resolve({
-      success: true,
-      message: 'Drop fetched!',
-      data: {
-         drop: {
-            id: dropId,
-            location: {
-               latitude: 1,
-               longitude: 1,
-            },
-            expiresAt: d.toISOString(),
-            author: 'Anonymous',
-            message: 'We are hosting a party here at 8PM!',
-            readByCount: 8,
-         },
-      },
+   const response: any = await axios.get(API_URLS.FETCH_DROP + `/${dropId}`, {
+      headers: getAuthHeaders(token),
    });
 
-   const res: any = await axios.get(API_URLS.FETCH_DROP + `/${dropId}`, {
-      headers: HEADERS,
-   });
-
-   const response = res.json();
-
-   return response;
+   return response.data;
 };

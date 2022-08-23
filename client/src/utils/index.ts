@@ -52,6 +52,8 @@ export const filterRangeDrops = (
       }
    }
 
+   console.log('returninh...');
+
    return {
       nearbyDrops,
       rangeDrops,

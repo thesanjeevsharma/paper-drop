@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const DropSchema = new mongoose.Schema(
    {
-      userId: {
+      user: {
          type: mongoose.SchemaTypes.ObjectId,
          ref: 'User',
          required: [true, 'User ID is required'],
@@ -13,13 +13,14 @@ const DropSchema = new mongoose.Schema(
          required: [true, 'Message is required'],
       },
       location: {
-         latitude: {
-            type: Number,
-            required: [true, 'Latitude is required'],
+         type: {
+            type: String,
+            enum: ['Point'],
+            required: true,
          },
-         longitude: {
-            type: Number,
-            required: [true, 'Longitude is required'],
+         coordinates: {
+            type: [Number],
+            required: true,
          },
       },
       readBy: [
@@ -45,5 +46,7 @@ const DropSchema = new mongoose.Schema(
       timestamps: true,
    }
 );
+
+DropSchema.index({ location: '2dsphere' });
 
 module.exports = mongoose.model('Drop', DropSchema);

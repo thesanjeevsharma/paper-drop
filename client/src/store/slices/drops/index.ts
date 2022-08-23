@@ -52,14 +52,19 @@ export const getNearbyDrops = createAsyncThunk(
    'drop/getNearbyDrops',
    async (
       { currentLocation, onSuccess, onFailure }: any,
-      { rejectWithValue }
+      { getState, rejectWithValue }
    ) => {
       try {
-         const response = await fetchNearbyDrops(currentLocation);
+         const state: any = getState();
+
+         const response = await fetchNearbyDrops(
+            currentLocation,
+            state.user.token
+         );
 
          if (response.success) {
             onSuccess();
-            return response.data;
+            return { ...response.data, currentLocation };
          }
 
          onFailure();

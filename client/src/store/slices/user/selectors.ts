@@ -1,5 +1,7 @@
-import { RootState } from "src/store";
+import { RootState } from 'src/store';
 
 export const selectIsLoggedIn = (state: RootState) => !!state.user.token;
 
 export const selectCurrentLocation = (state: RootState) => state.user.location;
+
+export const selectAuthToken = (state: RootState) => state.user.token;

@@ -15,7 +15,10 @@ import { useSelector } from 'react-redux';
 
 import { selectRangeDrops } from 'src/store/slices/drops/selectors';
 import { getDistanceFromLatLon } from 'src/utils';
-import { selectCurrentLocation } from 'src/store/slices/user/selectors';
+import {
+   selectAuthToken,
+   selectCurrentLocation,
+} from 'src/store/slices/user/selectors';
 import { DropDetails } from 'src/constants/types';
 import { fetchDrop } from 'src/services/api';
 import { ArrowBackIcon } from '@chakra-ui/icons';
@@ -28,6 +31,7 @@ type Props = {
 const RangeDropsList = ({ isOpen, onClose }: Props) => {
    const rangeDrops = useSelector(selectRangeDrops);
    const currentLocation = useSelector(selectCurrentLocation);
+   const token = useSelector(selectAuthToken);
 
    const [selectedDropId, setSelectedDropId] = React.useState<string | null>(
       null
@@ -40,11 +44,11 @@ const RangeDropsList = ({ isOpen, onClose }: Props) => {
    const totalDrops = rangeDrops.length;
 
    React.useEffect(() => {
-      if (selectedDropId) {
+      if (selectedDropId && token) {
          try {
             setIsInFlight(true);
             (async () => {
-               const response = await fetchDrop(selectedDropId);
+               const response = await fetchDrop(selectedDropId, token);
                if (response.success && response.data) {
                   console.log(response.data.drop);
                   setSelectedDrop(response.data.drop);
@@ -59,7 +63,7 @@ const RangeDropsList = ({ isOpen, onClose }: Props) => {
       } else {
          setSelectedDrop({} as DropDetails);
       }
-   }, [selectedDropId]);
+   }, [selectedDropId, token]);
 
    if (selectedDropId)
       return (
@@ -71,22 +75,26 @@ const RangeDropsList = ({ isOpen, onClose }: Props) => {
                      mr={2}
                      onClick={() => setSelectedDropId(null)}
                   />{' '}
-                  {totalDrops} drop{totalDrops > 1 && 's'} near you
+                  {totalDrops} Drop{totalDrops > 1 && 's'} near you
                </ModalHeader>
                {isInFlight ? (
-                  <Spinner />
+                  <Box my={4} mx="auto">
+                     <Spinner color="green.600" />
+                  </Box>
                ) : (
                   <ModalBody>
-                     <Text>Message drop by: {selectedDrop.author}</Text>
-                     <Text>
-                        Expires in:{' '}
-                        {/* <ReactTimeAgo
-                           date={new Date(selectedDrop.expiresAt)}
-                           locale="en-US"
-                        /> */}
-                     </Text>
+                     <Text>Author: {selectedDrop.author}</Text>
+                     {!!selectedDrop.createdAt && (
+                        <Text>
+                           Dropped:{' '}
+                           <ReactTimeAgo
+                              date={new Date(selectedDrop.createdAt)}
+                              locale="en-US"
+                           />
+                        </Text>
+                     )}
                      <Text fontWeight="semibold">
-                        Read by: {selectedDrop.readByCount}
+                        Read by: {selectedDrop.readBy}
                      </Text>
                      <Text my={8} fontSize="xl">
                         {selectedDrop.message}
@@ -116,24 +124,26 @@ const RangeDropsList = ({ isOpen, onClose }: Props) => {
 
                   return (
                      <Box
-                        key={drop.id}
+                        key={drop._id}
                         border="1px solid"
                         borderColor="gray.400"
                         borderRadius={4}
                         p={4}
                         mb={4}
                         role="button"
-                        onClick={() => setSelectedDropId(drop.id)}
+                        onClick={() => {
+                           setSelectedDropId(drop._id);
+                        }}
                         cursor="pointer"
                      >
                         <Text fontSize="sm">{distance}m away from you</Text>
                         <Text fontSize="md" fontWeight="semibold">
-                           Dropped by Anonymous
+                           Dropped by {drop.author}
                         </Text>
                         <Text fontSize="sm">
-                           Expires in:{' '}
+                           Dropped{' '}
                            <ReactTimeAgo
-                              date={new Date(drop.expiresAt)}
+                              date={new Date(drop.createdAt)}
                               locale="en-US"
                            />
                         </Text>

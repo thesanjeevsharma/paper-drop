@@ -4,13 +4,13 @@ export type Coordinates = {
 };
 
 export type Drop = {
-   id: string;
+   _id: string;
    location: Coordinates;
-   expiresAt: string;
+   createdAt: string;
+   author: string;
+   readBy: number;
 };
 
 export type DropDetails = Drop & {
    message: string;
-   author: string;
-   readByCount: number;
 };

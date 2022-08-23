@@ -22,6 +22,8 @@ mongoose
    })
    .catch((err) => console.log(err));
 
+require('./redis');
+
 app.use(express.json());
 app.use(cors());
 

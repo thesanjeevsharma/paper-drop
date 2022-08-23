@@ -62,6 +62,7 @@ const DropMap = () => {
       setCurrentLocation();
 
       // location syncing
+      if (intervalId.current) clearInterval(intervalId.current);
       intervalId.current = setInterval(() => {
          setCurrentLocation();
       }, 3000);
@@ -98,7 +99,7 @@ const DropMap = () => {
          />
          {rangeDrops.map((drop) => (
             <Marker
-               key={drop.id}
+               key={drop._id}
                scale={0.8}
                color="#805AD5"
                longitude={drop.location.longitude}
@@ -108,7 +109,7 @@ const DropMap = () => {
          ))}
          {nearbyDrops.map((drop) => (
             <Marker
-               key={drop.id}
+               key={drop._id}
                scale={0.8}
                longitude={drop.location.longitude}
                latitude={drop.location.latitude}
