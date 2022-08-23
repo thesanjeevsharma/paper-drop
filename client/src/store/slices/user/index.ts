@@ -23,13 +23,13 @@ export const login = createAsyncThunk(
       { rejectWithValue }
    ) => {
       try {
-         console.log(googleResponse);
          const response = await userLogin(googleResponse);
-         console.log(response);
+
          if (response.success) {
             onSuccess();
             return response.data;
          }
+
          onFailure();
          throw Error(response.message);
       } catch (error: any) {
@@ -48,6 +48,11 @@ export const userSlice = createSlice({
       setToken: (state, action) => {
          state.token = action.payload.token;
       },
+      logout: (state) => {
+         state.token = null;
+         state.location = null;
+         state.userDetails = null;
+      },
    },
    extraReducers: (builder) => {
       builder.addCase(login.fulfilled, (state, action) => {
@@ -61,7 +66,7 @@ export const userSlice = createSlice({
    },
 });
 
-export const { setLocation, setToken } = userSlice.actions;
+export const { setLocation, setToken, logout } = userSlice.actions;
 
 export const selectUser = (state: RootState) => state.user;
 
