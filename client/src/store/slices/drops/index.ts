@@ -14,12 +14,14 @@ type DropsState = {
    rangeDrops: Drop[];
    nearbyDrops: Drop[];
    myDrops: Drop[];
+   showLoading: boolean;
 };
 
 const initialState: DropsState = {
    rangeDrops: [],
    nearbyDrops: [],
    myDrops: [],
+   showLoading: true,
 };
 
 export const dropMessage = createAsyncThunk(
@@ -133,7 +135,15 @@ export const dropsSlice = createSlice({
    extraReducers: (builder) => {
       builder.addCase(dropMessage.fulfilled, (state, action) => {
          state.myDrops.unshift(action.payload.drop);
+         state.showLoading = false;
       });
+      builder.addCase(dropMessage.pending, (state) => {
+         state.showLoading = true;
+      });
+      builder.addCase(dropMessage.rejected, (state) => {
+         state.showLoading = false;
+      });
+
       builder.addCase(getNearbyDrops.fulfilled, (state, action) => {
          const { nearbyDrops, rangeDrops } = filterRangeDrops(
             action.payload.drops,
@@ -142,14 +152,37 @@ export const dropsSlice = createSlice({
 
          state.nearbyDrops = nearbyDrops;
          state.rangeDrops = rangeDrops;
+         state.showLoading = false;
       });
+      builder.addCase(getNearbyDrops.pending, (state) => {
+         state.showLoading = true;
+      });
+      builder.addCase(getNearbyDrops.rejected, (state) => {
+         state.showLoading = false;
+      });
+
       builder.addCase(getMyDrops.fulfilled, (state, action) => {
          state.myDrops = action.payload.drops;
+         state.showLoading = false;
       });
+      builder.addCase(getMyDrops.pending, (state) => {
+         state.showLoading = true;
+      });
+      builder.addCase(getMyDrops.rejected, (state) => {
+         state.showLoading = false;
+      });
+
       builder.addCase(removeDrop.fulfilled, (state, action) => {
          state.myDrops = state.myDrops.filter(
             (drop) => drop._id !== action.payload!.drop._id
          );
+         state.showLoading = false;
+      });
+      builder.addCase(removeDrop.pending, (state) => {
+         state.showLoading = true;
+      });
+      builder.addCase(removeDrop.rejected, (state) => {
+         state.showLoading = false;
       });
    },
 });
