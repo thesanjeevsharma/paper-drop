@@ -1,4 +1,4 @@
-export const BE_API = 'http://localhost:8000/api';
+export const BE_API = process.env.REACT_APP_API;
 
 export const API_URLS = {
    CREATE_ACCOUNT: `${BE_API}/users`,
