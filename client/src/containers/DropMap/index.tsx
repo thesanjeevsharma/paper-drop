@@ -4,9 +4,13 @@ import { Flex, Spinner } from '@chakra-ui/react';
 import mapboxgl from 'mapbox-gl';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectCurrentLocation } from 'src/store/slices/user/selectors';
-import { getNearbyDrops } from 'src/store/slices/drops';
 import {
+   selectCurrentLocation,
+   selectCurrentView,
+} from 'src/store/slices/user/selectors';
+import { getMyDrops, getNearbyDrops } from 'src/store/slices/drops';
+import {
+   selectMyDrops,
    selectNearbyDrops,
    selectRangeDrops,
 } from 'src/store/slices/drops/selectors';
@@ -22,6 +26,8 @@ const DropMap = () => {
    const currentLocation = useSelector(selectCurrentLocation);
    const nearbyDrops = useSelector(selectNearbyDrops);
    const rangeDrops = useSelector(selectRangeDrops);
+   const myDrops = useSelector(selectMyDrops);
+   const currentView = useSelector(selectCurrentView);
 
    const getDrops = React.useCallback(() => {
       const onSuccess = () => {};
@@ -30,12 +36,86 @@ const DropMap = () => {
       dispatch(getNearbyDrops({ onSuccess, onFailure }));
    }, [dispatch]);
 
+   const getUserDrops = React.useCallback(() => {
+      const onSuccess = () => {};
+      const onFailure = () => console.log('Failed to fetch your drops!');
+
+      dispatch(getMyDrops({ onSuccess, onFailure }));
+   }, [dispatch]);
+
    React.useEffect(() => {
-      if (currentLocation) {
+      if (currentLocation && currentView === 'nearby') {
          getDrops();
       }
+      if (currentView === 'my') {
+         getUserDrops();
+      }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [currentLocation?.latitude, currentLocation?.longitude, getDrops]);
+   }, [
+      currentLocation?.latitude,
+      currentLocation?.longitude,
+      getDrops,
+      currentView,
+      getUserDrops,
+   ]);
+
+   React.useEffect(() => {
+      getUserDrops();
+   }, [getUserDrops]);
+
+   const deleteDrop = (dropId: string) => {
+      const isConfirmed = window.prompt(
+         'Are you sure you want to delete this drop?'
+      );
+
+      if (isConfirmed) {
+         // delete drop
+      }
+   };
+
+   const renderDrops = () => {
+      if (currentView === 'my') {
+         return (
+            <>
+               {myDrops.map((drop) => (
+                  <Marker
+                     key={drop._id}
+                     scale={0.8}
+                     color="#68D391"
+                     longitude={drop.location.longitude}
+                     latitude={drop.location.latitude}
+                     anchor="bottom"
+                     onClick={() => deleteDrop(drop._id)}
+                  />
+               ))}
+            </>
+         );
+      }
+
+      return (
+         <>
+            {rangeDrops.map((drop) => (
+               <Marker
+                  key={drop._id}
+                  scale={0.8}
+                  color="#805AD5"
+                  longitude={drop.location.longitude}
+                  latitude={drop.location.latitude}
+                  anchor="bottom"
+               />
+            ))}
+            {nearbyDrops.map((drop) => (
+               <Marker
+                  key={drop._id}
+                  scale={0.8}
+                  longitude={drop.location.longitude}
+                  latitude={drop.location.latitude}
+                  anchor="bottom"
+               />
+            ))}
+         </>
+      );
+   };
 
    if (!currentLocation) {
       return (
@@ -64,25 +144,7 @@ const DropMap = () => {
             scale={0.9}
             anchor="bottom"
          />
-         {rangeDrops.map((drop) => (
-            <Marker
-               key={drop._id}
-               scale={0.8}
-               color="#805AD5"
-               longitude={drop.location.longitude}
-               latitude={drop.location.latitude}
-               anchor="bottom"
-            />
-         ))}
-         {nearbyDrops.map((drop) => (
-            <Marker
-               key={drop._id}
-               scale={0.8}
-               longitude={drop.location.longitude}
-               latitude={drop.location.latitude}
-               anchor="bottom"
-            />
-         ))}
+         {renderDrops()}
       </Map>
    );
 };

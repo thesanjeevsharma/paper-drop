@@ -21,12 +21,6 @@ const UserSchema = new mongoose.Schema(
          type: Boolean,
          default: false,
       },
-      drops: [
-         {
-            ref: 'Drop',
-            type: mongoose.SchemaTypes.ObjectId,
-         },
-      ],
    },
    {
       timestamps: true,

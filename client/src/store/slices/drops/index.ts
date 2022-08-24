@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { RootState } from 'src/store';
 
-import type { Drop } from 'src/constants/types';
-import { createDrop, fetchNearbyDrops } from 'src/services/api';
+import { RootState } from 'src/store';
+import { createDrop, fetchMyDrops, fetchNearbyDrops } from 'src/services/api';
 import { filterRangeDrops } from 'src/utils';
+import type { Drop } from 'src/constants/types';
 
 type DropsState = {
    rangeDrops: Drop[];
@@ -72,6 +72,27 @@ export const getNearbyDrops = createAsyncThunk(
    }
 );
 
+export const getMyDrops = createAsyncThunk(
+   'drop/getMyDrops',
+   async ({ onSuccess, onFailure }: any, { getState, rejectWithValue }) => {
+      try {
+         const state: any = getState();
+
+         const response = await fetchMyDrops(state.user.token);
+
+         if (response.success) {
+            onSuccess();
+            return response.data;
+         }
+
+         onFailure();
+         throw Error(response.message);
+      } catch (error: any) {
+         return rejectWithValue(error.message);
+      }
+   }
+);
+
 export const dropsSlice = createSlice({
    initialState,
    name: 'drops',
@@ -92,6 +113,9 @@ export const dropsSlice = createSlice({
 
          state.nearbyDrops = nearbyDrops;
          state.rangeDrops = rangeDrops;
+      });
+      builder.addCase(getMyDrops.fulfilled, (state, action) => {
+         state.myDrops = action.payload.drops;
       });
    },
 });

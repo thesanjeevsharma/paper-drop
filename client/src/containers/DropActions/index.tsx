@@ -1,12 +1,14 @@
 import React from 'react';
-import { Box, Button } from '@chakra-ui/react';
+import { Button } from '@chakra-ui/react';
 import { useSelector } from 'react-redux';
 import DropMessageForm from '../DropMessageForm';
 import { selectRangeDrops } from 'src/store/slices/drops/selectors';
 import RangeDropsList from '../RangeDropsList';
+import { selectCurrentView } from 'src/store/slices/user/selectors';
 
 const DropActions = () => {
    const rangeDrops = useSelector(selectRangeDrops);
+   const currentView = useSelector(selectCurrentView);
 
    const [isDropFormOpen, setIsDropFormOpen] = React.useState<boolean>(false);
    const [isRangeDropsModalOpen, setIsRangeDropsModalOpen] =
@@ -16,28 +18,26 @@ const DropActions = () => {
 
    return (
       <>
-         <Box bg="white" px={6} py={8}>
-            <Button
-               bg="green.600"
-               color="white"
-               width="full"
-               onClick={() => setIsDropFormOpen(true)}
-               mb={2}
-            >
-               Drop a message here
-            </Button>
+         <Button
+            bg="green.600"
+            color="white"
+            width="full"
+            onClick={() => setIsDropFormOpen(true)}
+            mb={2}
+         >
+            Drop a message here
+         </Button>
 
-            {!!totalDrops && (
-               <Button
-                  variant="outline"
-                  color="green.600"
-                  width="full"
-                  onClick={() => setIsRangeDropsModalOpen(true)}
-               >
-                  {totalDrops} drop{totalDrops > 1 && 's'} near you
-               </Button>
-            )}
-         </Box>
+         {!!totalDrops && currentView === 'nearby' && (
+            <Button
+               variant="outline"
+               color="green.600"
+               width="full"
+               onClick={() => setIsRangeDropsModalOpen(true)}
+            >
+               {totalDrops} drop{totalDrops > 1 && 's'} near you
+            </Button>
+         )}
 
          <DropMessageForm
             isOpen={isDropFormOpen}

@@ -1,6 +1,12 @@
 import React from 'react';
 import { Box, Flex, Text } from '@chakra-ui/react';
-import { Layout, DropMap, DropActions, LogoutButton } from 'src/containers';
+import {
+   Layout,
+   DropMap,
+   DropActions,
+   LogoutButton,
+   Tabs,
+} from 'src/containers';
 import { useSelector } from 'react-redux';
 import { selectCurrentLocation } from 'src/store/slices/user/selectors';
 
@@ -35,7 +41,11 @@ const Home = () => {
                width="100vw"
                maxWidth="container.sm"
                boxShadow="0px -5px 5px 1px #cacaca"
+               bg="white"
+               p={4}
             >
+               <Tabs />
+               <Box h={4} />
                <DropActions />
             </Box>
          )}

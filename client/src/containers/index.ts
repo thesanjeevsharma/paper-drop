@@ -5,6 +5,7 @@ import LoginButton from './LoginButton';
 import DropMessageForm from './DropMessageForm';
 import RangeDropsList from './RangeDropsList';
 import LogoutButton from './LogoutButton';
+import Tabs from './Tabs';
 
 export {
    Layout,
@@ -14,4 +15,5 @@ export {
    DropMessageForm,
    RangeDropsList,
    LogoutButton,
+   Tabs,
 };

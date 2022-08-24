@@ -6,6 +6,28 @@ const Drop = require('../models/drop.model');
 const utils = require('../utils');
 const redisClient = require('../redis');
 
+router.get('/my', jwt.authenticate, async (req, res, next) => {
+   try {
+      const drops = await Drop.find({
+         user: req.decoded.id,
+         isDeleted: false,
+         isExpired: false,
+      }).lean();
+
+      const sanitizedDrops = utils.sanitizeDrops(drops, { withMessage: true });
+
+      return res.json({
+         success: true,
+         message: 'Drops fetched!',
+         data: {
+            drops: sanitizedDrops,
+         },
+      });
+   } catch (error) {
+      next(error);
+   }
+});
+
 router.get('/', jwt.authenticate, async (req, res, next) => {
    try {
       const { lon: longitude, lat: latitude } = req.query;
@@ -34,7 +56,7 @@ router.get('/', jwt.authenticate, async (req, res, next) => {
 
       const drops = await Drop.find({
          _id: { $in: dropIds },
-         // user: { $not: { $eq: req.decoded.id } },
+         user: { $not: { $eq: req.decoded.id } },
       })
          .populate('user')
          .lean();
@@ -70,9 +92,7 @@ router.get('/:dropId', jwt.authenticate, async (req, res, next) => {
          },
          { $addToSet: { readBy: mongoose.Types.ObjectId(req.decoded.id) } },
          { new: true }
-      )
-         .populate('user')
-         .lean();
+      ).populate('user');
 
       if (!drop) {
          return res.json({
@@ -80,6 +100,11 @@ router.get('/:dropId', jwt.authenticate, async (req, res, next) => {
             message: 'Drop expired or does not exist!',
             data: null,
          });
+      }
+
+      if (drop.readBy.length >= 5) {
+         drop.isExpired = true;
+         await drop.save();
       }
 
       const [sanitizedDrop] = utils.sanitizeDrops([drop], {

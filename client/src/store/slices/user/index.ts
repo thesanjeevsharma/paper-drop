@@ -8,12 +8,14 @@ type UserState = {
    token: null | string;
    location: null | Coordinates;
    userDetails: any;
+   currentView: 'nearby' | 'my';
 };
 
 const initialState: UserState = {
    location: null,
    token: null,
    userDetails: null,
+   currentView: 'nearby',
 };
 
 export const login = createAsyncThunk(
@@ -53,6 +55,9 @@ export const userSlice = createSlice({
          state.location = null;
          state.userDetails = null;
       },
+      setCurrentView: (state, action) => {
+         state.currentView = action.payload.view;
+      },
    },
    extraReducers: (builder) => {
       builder.addCase(login.fulfilled, (state, action) => {
@@ -66,7 +71,8 @@ export const userSlice = createSlice({
    },
 });
 
-export const { setLocation, setToken, logout } = userSlice.actions;
+export const { setLocation, setToken, logout, setCurrentView } =
+   userSlice.actions;
 
 export const selectUser = (state: RootState) => state.user;
 

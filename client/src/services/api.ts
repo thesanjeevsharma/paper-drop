@@ -1,6 +1,6 @@
 /* eslint-disable no-unreachable */
 import axios from 'axios';
-import { Coordinates, Drop, DropDetails } from 'src/constants/types';
+import { Coordinates, DropDetails } from 'src/constants/types';
 import { API_URLS } from 'src/constants/urls';
 
 const HEADERS = { 'Content-Type': 'application/json' };
@@ -51,6 +51,14 @@ export const fetchNearbyDrops = async (
          headers: getAuthHeaders(token),
       }
    );
+
+   return response.data;
+};
+
+export const fetchMyDrops = async (token: string) => {
+   const response: any = await axios.get(API_URLS.FETCH_MY_DROPS, {
+      headers: getAuthHeaders(token),
+   });
 
    return response.data;
 };
