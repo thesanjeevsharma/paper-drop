@@ -25,7 +25,21 @@ mongoose
 require('./redis');
 
 app.use(express.json());
-app.use(cors());
+
+const origin =
+   process.env.NODE_ENV === 'production'
+      ? 'https://paperdrop.vercel.app'
+      : 'http://localhost:3000';
+
+// Setting up cors
+app.use(
+   cors({
+      origin: origin,
+      preflightContinue: true,
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+      credentials: true,
+   })
+);
 
 // routes
 app.use('/api/users', UserRouter);

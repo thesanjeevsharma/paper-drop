@@ -21,7 +21,7 @@ const initialState: DropsState = {
    rangeDrops: [],
    nearbyDrops: [],
    myDrops: [],
-   showLoading: true,
+   showLoading: false,
 };
 
 export const dropMessage = createAsyncThunk(
