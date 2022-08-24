@@ -1,18 +1,16 @@
 import React from 'react';
 import Map, { Marker } from 'react-map-gl';
-
+import { Flex, Spinner } from '@chakra-ui/react';
 import mapboxgl from 'mapbox-gl';
 import { useDispatch, useSelector } from 'react-redux';
+
 import { selectCurrentLocation } from 'src/store/slices/user/selectors';
-import { setLocation } from 'src/store/slices/user';
 import { getNearbyDrops } from 'src/store/slices/drops';
 import {
    selectNearbyDrops,
    selectRangeDrops,
 } from 'src/store/slices/drops/selectors';
-
 import { AppDispatch } from 'src/store';
-import { getCurrentLocation } from 'src/utils';
 
 //@ts-ignore
 mapboxgl.workerClass =
@@ -25,57 +23,26 @@ const DropMap = () => {
    const nearbyDrops = useSelector(selectNearbyDrops);
    const rangeDrops = useSelector(selectRangeDrops);
 
-   const intervalId = React.useRef<any>(null);
-
-   const setCurrentLocation = React.useCallback(() => {
-      getCurrentLocation((pos) => {
-         // TODO: gets called 2 times
-
-         if (pos) {
-            dispatch(
-               setLocation({
-                  coordinates: {
-                     latitude: pos.latitude,
-                     longitude: pos.longitude,
-                  },
-               })
-            );
-         }
-      });
-   }, [dispatch]);
-
    const getDrops = React.useCallback(() => {
       const onSuccess = () => {};
       const onFailure = () => console.log('Failed to fetch drops!');
 
-      dispatch(getNearbyDrops({ currentLocation, onSuccess, onFailure }));
-   }, [currentLocation, dispatch]);
+      dispatch(getNearbyDrops({ onSuccess, onFailure }));
+   }, [dispatch]);
 
    React.useEffect(() => {
-      if (!nearbyDrops.length && currentLocation) {
-         console.log('fetching from server...');
+      if (currentLocation) {
          getDrops();
       }
-   }, [currentLocation, getDrops, nearbyDrops.length]);
-
-   React.useEffect(() => {
-      setCurrentLocation();
-
-      // location syncing
-      if (intervalId.current) clearInterval(intervalId.current);
-      intervalId.current = setInterval(() => {
-         setCurrentLocation();
-      }, 3000);
-
-      return () => {
-         if (intervalId.current) {
-            clearInterval(intervalId.current);
-         }
-      };
-   }, [setCurrentLocation]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [currentLocation?.latitude, currentLocation?.longitude, getDrops]);
 
    if (!currentLocation) {
-      return <>"Loading..."</>;
+      return (
+         <Flex h="50vh" align="center" justify="center">
+            <Spinner color="green.600" />
+         </Flex>
+      );
    }
 
    return (

@@ -6,6 +6,7 @@ import { gapi } from 'gapi-script';
 import { ROUTES } from './constants/routes';
 import { Home, Login } from './pages';
 import { selectIsLoggedIn } from './store/slices/user/selectors';
+import usePosition from './hooks/usePosition';
 
 gapi.load('client:auth2', () => {
    gapi.client.init({
@@ -27,6 +28,8 @@ const ReverseRouteProtection = () => {
 };
 
 const App = () => {
+   usePosition();
+
    return (
       <Routes>
          <Route element={<RouteProtection />}>
