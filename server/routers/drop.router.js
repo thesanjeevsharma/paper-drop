@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const mongoose = require('mongoose');
 
 const jwt = require('../middlewares/jwt');
 const Drop = require('../models/drop.model');
@@ -27,7 +28,7 @@ router.get('/', jwt.authenticate, async (req, res, next) => {
       const dropIds = await redisClient.geoRadius(
          'drops',
          { latitude, longitude },
-         3,
+         2,
          'km'
       );
 
@@ -41,7 +42,7 @@ router.get('/', jwt.authenticate, async (req, res, next) => {
       const sanitizedDrops = utils.sanitizeDrops(drops);
 
       await redisClient.set(redisKey, JSON.stringify(sanitizedDrops), {
-         EX: 30,
+         EX: 15,
       });
       console.log('fetched from db');
 
@@ -61,11 +62,15 @@ router.get('/:dropId', jwt.authenticate, async (req, res, next) => {
    try {
       const { dropId } = req.params;
 
-      const drop = await Drop.findOne({
-         _id: dropId,
-         isDeleted: false,
-         isExpired: false,
-      })
+      const drop = await Drop.findOneAndUpdate(
+         {
+            _id: dropId,
+            isDeleted: false,
+            isExpired: false,
+         },
+         { $addToSet: { readBy: mongoose.Types.ObjectId(req.decoded.id) } },
+         { new: true }
+      )
          .populate('user')
          .lean();
 
