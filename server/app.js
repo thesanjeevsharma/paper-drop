@@ -10,6 +10,7 @@ const DropRouter = require('./routers/drop.router');
 const app = express();
 
 app.use(logger('dev'));
+app.options('*', cors());
 
 // db connection
 mongoose
@@ -25,21 +26,6 @@ mongoose
 require('./redis');
 
 app.use(express.json());
-
-const origin =
-   process.env.NODE_ENV === 'production'
-      ? 'https://paperdrop.vercel.app'
-      : 'http://localhost:3000';
-
-// Setting up cors
-app.use(
-   cors({
-      origin: origin,
-      preflightContinue: true,
-      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-      credentials: true,
-   })
-);
 
 // routes
 app.use('/api/users', UserRouter);
