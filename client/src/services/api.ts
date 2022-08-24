@@ -77,3 +77,17 @@ export const fetchDrop = async (
 
    return response.data;
 };
+
+export const deleteDrop = async (
+   dropId: string,
+   token: string
+): Promise<ApiResponse<FetchDropData>> => {
+   const response: any = await axios.delete(
+      API_URLS.DELETE_DROP + `/${dropId}`,
+      {
+         headers: getAuthHeaders(token),
+      }
+   );
+
+   return response.data;
+};

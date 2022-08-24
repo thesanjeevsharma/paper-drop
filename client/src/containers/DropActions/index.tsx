@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@chakra-ui/react';
+import { Button, Text } from '@chakra-ui/react';
 import { useSelector } from 'react-redux';
 import DropMessageForm from '../DropMessageForm';
 import { selectRangeDrops } from 'src/store/slices/drops/selectors';
@@ -35,8 +35,14 @@ const DropActions = () => {
                width="full"
                onClick={() => setIsRangeDropsModalOpen(true)}
             >
-               {totalDrops} drop{totalDrops > 1 && 's'} near you
+               {totalDrops} Drop{totalDrops > 1 && 's'} near you
             </Button>
+         )}
+
+         {currentView === 'my' && (
+            <Text textAlign="center" fontStyle="italic" color="gray.500">
+               Tap drops to delete them!
+            </Text>
          )}
 
          <DropMessageForm

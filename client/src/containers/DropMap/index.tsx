@@ -8,7 +8,7 @@ import {
    selectCurrentLocation,
    selectCurrentView,
 } from 'src/store/slices/user/selectors';
-import { getMyDrops, getNearbyDrops } from 'src/store/slices/drops';
+import { getMyDrops, getNearbyDrops, removeDrop } from 'src/store/slices/drops';
 import {
    selectMyDrops,
    selectNearbyDrops,
@@ -64,12 +64,15 @@ const DropMap = () => {
    }, [getUserDrops]);
 
    const deleteDrop = (dropId: string) => {
-      const isConfirmed = window.prompt(
+      const isConfirmed = window.confirm(
          'Are you sure you want to delete this drop?'
       );
 
+      const onSuccess = () => {};
+      const onFailure = () => console.log('Failed to delete drop!');
+
       if (isConfirmed) {
-         // delete drop
+         dispatch(removeDrop({ dropId, onSuccess, onFailure }));
       }
    };
 

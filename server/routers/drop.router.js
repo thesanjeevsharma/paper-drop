@@ -56,6 +56,8 @@ router.get('/', jwt.authenticate, async (req, res, next) => {
 
       const drops = await Drop.find({
          _id: { $in: dropIds },
+         isDeleted: false,
+         isExpired: false,
          user: { $not: { $eq: req.decoded.id } },
       })
          .populate('user')
@@ -114,6 +116,43 @@ router.get('/:dropId', jwt.authenticate, async (req, res, next) => {
       return res.json({
          success: true,
          message: 'Drop fetched!',
+         data: {
+            drop: sanitizedDrop,
+         },
+      });
+   } catch (error) {
+      next(error);
+   }
+});
+
+router.delete('/:dropId', jwt.authenticate, async (req, res, next) => {
+   try {
+      const { dropId } = req.params;
+
+      const drop = await Drop.findOneAndUpdate(
+         {
+            _id: dropId,
+            user: req.decoded.id,
+            isDeleted: false,
+         },
+         { isDeleted: true }
+      ).populate('user');
+
+      if (!drop) {
+         return res.json({
+            success: false,
+            message: 'Drop expired or does not exist!',
+            data: null,
+         });
+      }
+
+      const [sanitizedDrop] = utils.sanitizeDrops([drop], {
+         withMessage: true,
+      });
+
+      return res.json({
+         success: true,
+         message: 'Drop deleted!',
          data: {
             drop: sanitizedDrop,
          },

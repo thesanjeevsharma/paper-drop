@@ -1,7 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import { RootState } from 'src/store';
-import { createDrop, fetchMyDrops, fetchNearbyDrops } from 'src/services/api';
+import {
+   createDrop,
+   deleteDrop,
+   fetchMyDrops,
+   fetchNearbyDrops,
+} from 'src/services/api';
 import { filterRangeDrops } from 'src/utils';
 import type { Drop } from 'src/constants/types';
 
@@ -93,6 +98,30 @@ export const getMyDrops = createAsyncThunk(
    }
 );
 
+export const removeDrop = createAsyncThunk(
+   'drop/removeDrop',
+   async (
+      { dropId, onSuccess, onFailure }: any,
+      { getState, rejectWithValue }
+   ) => {
+      try {
+         const state: any = getState();
+
+         const response = await deleteDrop(dropId, state.user.token);
+
+         if (response.success) {
+            onSuccess();
+            return response.data;
+         }
+
+         onFailure();
+         throw Error(response.message);
+      } catch (error: any) {
+         return rejectWithValue(error.message);
+      }
+   }
+);
+
 export const dropsSlice = createSlice({
    initialState,
    name: 'drops',
@@ -116,6 +145,11 @@ export const dropsSlice = createSlice({
       });
       builder.addCase(getMyDrops.fulfilled, (state, action) => {
          state.myDrops = action.payload.drops;
+      });
+      builder.addCase(removeDrop.fulfilled, (state, action) => {
+         state.myDrops = state.myDrops.filter(
+            (drop) => drop._id !== action.payload!.drop._id
+         );
       });
    },
 });
