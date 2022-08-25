@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import {
    Button,
    Checkbox,
@@ -36,13 +36,22 @@ const DropMessageForm = ({ isOpen, onClose }: Props) => {
       setMessage('');
    };
 
+   const _onClose = () => {
+      resetForm();
+      onClose();
+   };
+
+   const handleMessageChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+      if (e.target.value.length > 280) return;
+      setMessage(e.target.value);
+   };
+
    const handleDrop = () => {
       setIsInFlight(true);
 
       const onSuccess = () => {
          setIsInFlight(false);
-         resetForm();
-         onClose();
+         _onClose();
       };
 
       const onFailure = () => {
@@ -59,7 +68,7 @@ const DropMessageForm = ({ isOpen, onClose }: Props) => {
    };
 
    return (
-      <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="md">
+      <Drawer isOpen={isOpen} placement="right" onClose={_onClose} size="md">
          <DrawerOverlay />
          <DrawerContent>
             <DrawerHeader>Drop a message here</DrawerHeader>
@@ -97,17 +106,19 @@ const DropMessageForm = ({ isOpen, onClose }: Props) => {
                <Text mb={2}>What's your message?</Text>
                <Textarea
                   value={message}
-                  onChange={(e) => setMessage(e.target.value)}
+                  onChange={handleMessageChange}
                   placeholder="We're hosting a party at 8PM here!"
                   size="sm"
+                  rows={5}
                />
+               <Text align="right">{message.length}/280</Text>
             </DrawerBody>
 
             <DrawerFooter>
                <Button
                   variant="outline"
                   mr={3}
-                  onClick={onClose}
+                  onClick={_onClose}
                   isDisabled={isInFlight}
                >
                   Cancel
