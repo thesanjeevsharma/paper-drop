@@ -1,1 +1,2 @@
-export const RANGE_DROPS_DISTANCE = 200;
+export const RANGE_DROPS_DISTANCE = 50;
+export const DROP_MESSAGE_CHAR_LIMIT = 280;

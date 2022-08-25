@@ -17,6 +17,7 @@ import Map, { Marker } from 'react-map-gl';
 import { AppDispatch } from 'src/store';
 import { dropMessage } from 'src/store/slices/drops';
 import { selectCurrentLocation } from 'src/store/slices/user/selectors';
+import { DROP_MESSAGE_CHAR_LIMIT } from 'src/constants/config';
 
 type Props = {
    isOpen: boolean;
@@ -42,7 +43,7 @@ const DropMessageForm = ({ isOpen, onClose }: Props) => {
    };
 
    const handleMessageChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-      if (e.target.value.length > 280) return;
+      if (e.target.value.length > DROP_MESSAGE_CHAR_LIMIT) return;
       setMessage(e.target.value);
    };
 
@@ -111,7 +112,9 @@ const DropMessageForm = ({ isOpen, onClose }: Props) => {
                   size="sm"
                   rows={5}
                />
-               <Text align="right">{message.length}/280</Text>
+               <Text align="right">
+                  {message.length}/{DROP_MESSAGE_CHAR_LIMIT}
+               </Text>
             </DrawerBody>
 
             <DrawerFooter>

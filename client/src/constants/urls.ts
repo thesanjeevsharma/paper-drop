@@ -1,4 +1,5 @@
-const API = process.env.REACT_APP_API;
+const API =
+   process.env.NODE_ENV === 'production' ? '/api' : process.env.REACT_APP_API;
 
 export const API_URLS = {
    LOGIN: `${API}/users/login`,
