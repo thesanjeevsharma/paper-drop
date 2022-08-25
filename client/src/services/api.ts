@@ -19,13 +19,9 @@ const getAuthHeaders = (token: string) => {
 };
 
 export const userLogin = async (userDetails: any): Promise<any> => {
-   const response: any = await axios.post(
-      API_URLS.CREATE_ACCOUNT,
-      userDetails,
-      {
-         headers: HEADERS,
-      }
-   );
+   const response: any = await axios.post(API_URLS.LOGIN, userDetails, {
+      headers: HEADERS,
+   });
 
    return response.data;
 };

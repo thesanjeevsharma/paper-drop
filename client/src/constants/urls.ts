@@ -1,6 +1,7 @@
 const API = process.env.REACT_APP_API;
 
 export const API_URLS = {
+   LOGIN: `${API}/users/login`,
    CREATE_ACCOUNT: `${API}/users`,
    DROP_MESSAGE: `${API}/drops`,
    FETCH_NEARBY_DROPS: `${API}/drops`,

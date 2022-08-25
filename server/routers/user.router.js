@@ -1,39 +1,93 @@
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 const User = require('../models/user.model');
 
 router.post('/', async (req, res, next) => {
    try {
-      const { email, firstName, lastName, googleId } = req.body;
+      const { email, name, password } = req.body;
 
-      let user;
-      user = await User.findOne({ email, googleId, isDeleted: false });
+      const user = await User.findOne({ email, isDeleted: false });
 
-      if (!user) {
-         const newUser = new User({
-            firstName,
-            lastName,
-            email,
-            googleId,
+      if (user) {
+         return res.json({
+            success: false,
+            message: 'Email already in use!',
+            data: null,
          });
-         user = await newUser.save();
       }
 
-      const token = await jwt.sign({ id: user._id }, process.env.SECRET, {
+      const newUser = new User({
+         email,
+         name,
+         password,
+      });
+      await newUser.save();
+
+      const token = await jwt.sign({ id: newUser._id }, process.env.SECRET, {
          expiresIn: '7d',
       });
 
       res.status(200).json({
          success: true,
-         message: 'User logged in!',
+         message: 'Account created!',
          data: {
             user: {
-               firstName: user.firstName,
-               lastName: user.lastName,
+               name,
+               email,
             },
             token,
          },
+      });
+   } catch (error) {
+      next(error);
+   }
+});
+
+router.post('/login', async (req, res, next) => {
+   try {
+      const { email, password } = req.body;
+
+      console.log({ email, password });
+
+      const user = await User.findOne({ email, isDeleted: false });
+
+      if (!user) {
+         return res.json({
+            success: false,
+            message: 'Email or Password is incorrect!',
+            data: null,
+         });
+      }
+
+      const isMatch = bcrypt.compareSync(password, user.password);
+
+      if (isMatch) {
+         const payload = {
+            id: user._id,
+         };
+         const token = jwt.sign(payload, process.env.SECRET, {
+            expiresIn: '7d',
+         });
+
+         return res.json({
+            success: true,
+            message: 'Authentication successful!',
+            data: {
+               token: token,
+               user: {
+                  email,
+                  name: user.name,
+               },
+            },
+         });
+      }
+
+      return res.json({
+         success: false,
+         message: 'Email or Password is incorrect!',
+         data: null,
       });
    } catch (error) {
       next(error);

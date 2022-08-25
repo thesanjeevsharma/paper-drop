@@ -1,19 +1,11 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Box, Flex, Text } from '@chakra-ui/react';
 
-import { Layout, LoginButton } from 'src/containers';
-import { ROUTES } from 'src/constants/routes';
+import { Layout, LoginForm } from 'src/containers';
 
 import './Login.css';
 
 const Login = () => {
-   const navigate = useNavigate();
-
-   const handleLoginSuccess = () => {
-      navigate(ROUTES.HOME.path, { replace: true });
-   };
-
    return (
       <Layout>
          <Flex
@@ -32,7 +24,7 @@ const Login = () => {
                <Text fontSize="l">Drop secret messages across the world!</Text>
             </Box>
 
-            <LoginButton onSuccess={handleLoginSuccess} />
+            <LoginForm />
          </Flex>
       </Layout>
    );

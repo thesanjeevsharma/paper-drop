@@ -1,8 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+
 import { RootState } from 'src/store';
+import { userLogin } from 'src/services/api';
 
 import type { Coordinates } from 'src/constants/types';
-import { userLogin } from 'src/services/api';
 
 type UserState = {
    token: null | string;
@@ -20,12 +21,9 @@ const initialState: UserState = {
 
 export const login = createAsyncThunk(
    'user/login',
-   async (
-      { googleResponse, onSuccess, onFailure }: any,
-      { rejectWithValue }
-   ) => {
+   async ({ data, onSuccess, onFailure }: any, { rejectWithValue }) => {
       try {
-         const response = await userLogin(googleResponse);
+         const response = await userLogin(data);
 
          if (response.success) {
             onSuccess();

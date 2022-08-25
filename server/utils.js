@@ -5,7 +5,7 @@ const sanitizeDrops = (drops, options) =>
          longitude: drop.location.coordinates[0],
          latitude: drop.location.coordinates[1],
       },
-      author: drop.isAnonymous ? 'Anonymous' : drop.user.firstName,
+      author: drop.isAnonymous ? 'Anonymous' : drop.user.name,
       createdAt: drop.createdAt,
       readBy: drop.readBy.length,
       ...(options?.withMessage && { message: drop.message }),
