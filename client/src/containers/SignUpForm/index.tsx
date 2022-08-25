@@ -2,14 +2,15 @@ import React, { FormEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, Button, Input } from '@chakra-ui/react';
 
-import { login } from 'src/store/slices/user';
+import { signup } from 'src/store/slices/user';
 import { AppDispatch } from 'src/store';
 import { selectIsUserLoading } from 'src/store/slices/user/selectors';
 
-const LoginForm = () => {
+const SignUpForm = () => {
    const dispatch = useDispatch<AppDispatch>();
    const isLoading = useSelector(selectIsUserLoading);
 
+   const [name, setName] = React.useState<string>('');
    const [email, setEmail] = React.useState<string>('');
    const [password, setPassword] = React.useState<string>('');
 
@@ -17,15 +18,25 @@ const LoginForm = () => {
       e.preventDefault();
 
       const onSuccess = () => {};
-      const onFailure = () => console.log('Failed to login!');
+      const onFailure = () => console.log('Failed to create account!');
 
-      const data = { email, password };
-      dispatch(login({ data, onSuccess, onFailure }));
+      const data = { email, password, name };
+      dispatch(signup({ data, onSuccess, onFailure }));
    };
 
    return (
       <Box maxW="420px">
          <form onSubmit={handleSubmit}>
+            <Input
+               placeholder="Name"
+               type="text"
+               value={name}
+               onChange={(e) => setName(e.target.value)}
+               mb={2}
+               bg="white"
+               color="gray.700"
+               required
+            />
             <Input
                placeholder="Email"
                type="email"
@@ -57,11 +68,11 @@ const LoginForm = () => {
                minW="180px"
                isDisabled={isLoading}
             >
-               Login
+               Create Account
             </Button>
          </form>
       </Box>
    );
 };
 
-export default LoginForm;
+export default SignUpForm;

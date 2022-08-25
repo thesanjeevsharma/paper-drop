@@ -6,7 +6,8 @@ const User = require('../models/user.model');
 
 router.post('/', async (req, res, next) => {
    try {
-      const { email, name, password } = req.body;
+      const { name, password } = req.body;
+      const email = req.body.email.toLowerCase();
 
       const user = await User.findOne({ email, isDeleted: false });
 
@@ -47,9 +48,8 @@ router.post('/', async (req, res, next) => {
 
 router.post('/login', async (req, res, next) => {
    try {
-      const { email, password } = req.body;
-
-      console.log({ email, password });
+      const { password } = req.body;
+      const email = req.body.email.toLowerCase();
 
       const user = await User.findOne({ email, isDeleted: false });
 

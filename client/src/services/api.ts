@@ -26,6 +26,18 @@ export const userLogin = async (userDetails: any): Promise<any> => {
    return response.data;
 };
 
+export const createAccount = async (userDetails: any): Promise<any> => {
+   const response: any = await axios.post(
+      API_URLS.CREATE_ACCOUNT,
+      userDetails,
+      {
+         headers: HEADERS,
+      }
+   );
+
+   return response.data;
+};
+
 export const createDrop = async (dropDetails: any, token: string) => {
    console.log(dropDetails);
    const response: any = await axios.post(API_URLS.DROP_MESSAGE, dropDetails, {
