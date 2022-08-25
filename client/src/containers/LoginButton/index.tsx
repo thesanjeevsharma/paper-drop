@@ -13,7 +13,6 @@ const LoginButton = ({ onSuccess }: Props) => {
    const dispatch = useDispatch<AppDispatch>();
 
    const responseGoogle = (response: any) => {
-      console.log({ response });
       if (response) {
          const sanitizedUser = {
             email: response.profileObj.email,
