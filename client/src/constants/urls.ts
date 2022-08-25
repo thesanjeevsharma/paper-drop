@@ -1,8 +1,10 @@
+const API = process.env.REACT_APP_API;
+
 export const API_URLS = {
-   CREATE_ACCOUNT: `/api/users`,
-   DROP_MESSAGE: `/api/drops`,
-   FETCH_NEARBY_DROPS: `/api/drops`,
-   FETCH_MY_DROPS: `/api/drops/my`,
-   FETCH_DROP: `/api/drops`,
-   DELETE_DROP: `/api/drops`,
+   CREATE_ACCOUNT: `${API}/users`,
+   DROP_MESSAGE: `${API}/drops`,
+   FETCH_NEARBY_DROPS: `${API}/drops`,
+   FETCH_MY_DROPS: `${API}/drops/my`,
+   FETCH_DROP: `${API}/drops`,
+   DELETE_DROP: `${API}/drops`,
 };
