@@ -1,7 +1,9 @@
 import React from 'react';
 import { Box, Flex, Text } from '@chakra-ui/react';
+import { Link } from 'react-router-dom';
 
 import { Layout, LoginForm, SignUpForm } from 'src/containers';
+import { ROUTES } from 'src/constants/routes';
 
 import './Login.css';
 
@@ -11,7 +13,7 @@ const Login = () => {
    return (
       <Layout>
          <Flex
-            className="login-wrapper"
+            className="bg-wrapper"
             direction="column"
             align="center"
             justify="center"
@@ -33,11 +35,19 @@ const Login = () => {
                textDecoration="underline"
                color="white"
                mt={4}
+               mb={12}
                onClick={() => setShowLogin(!showLogin)}
             >
                {showLogin
                   ? "Don't have an account? Create one!"
                   : 'Already have an account? Login!'}
+            </Text>
+
+            <Link to={ROUTES.INSTRUCTIONS}>
+               First time? Click here to read instructions.
+            </Link>
+            <Text fontStyle="italic">
+               Make sure your Location services are turned on!
             </Text>
          </Flex>
       </Layout>

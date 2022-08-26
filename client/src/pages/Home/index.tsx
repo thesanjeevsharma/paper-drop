@@ -1,5 +1,9 @@
 import React from 'react';
 import { Box, Flex, Text } from '@chakra-ui/react';
+import { useSelector } from 'react-redux';
+import { InfoIcon } from '@chakra-ui/icons';
+import { Link } from 'react-router-dom';
+
 import {
    Layout,
    DropMap,
@@ -7,8 +11,8 @@ import {
    LogoutButton,
    Tabs,
 } from 'src/containers';
-import { useSelector } from 'react-redux';
 import { selectCurrentLocation } from 'src/store/slices/user/selectors';
+import { ROUTES } from 'src/constants/routes';
 
 const Home = () => {
    const currentLocation = useSelector(selectCurrentLocation);
@@ -30,7 +34,12 @@ const Home = () => {
             <Text fontSize="md" color="green.600" fontWeight="semibold">
                PaperDrop
             </Text>
-            <LogoutButton />
+            <Flex align="center">
+               <Link to={ROUTES.INSTRUCTIONS}>
+                  <InfoIcon color="green.600" cursor="pointer" mr={4} />
+               </Link>
+               <LogoutButton />
+            </Flex>
          </Flex>
          <DropMap />
          {!!currentLocation && (
