@@ -47,7 +47,7 @@ export const dropMessage = createAsyncThunk(
             return response.data;
          }
 
-         onFailure();
+         onFailure(response.message);
          throw Error(response.message);
       } catch (error: any) {
          return rejectWithValue(error.message);
@@ -71,7 +71,7 @@ export const getNearbyDrops = createAsyncThunk(
             return { ...response.data, currentLocation: state.user.location };
          }
 
-         onFailure();
+         onFailure(response.message);
          throw Error(response.message);
       } catch (error: any) {
          return rejectWithValue(error.message);
@@ -92,7 +92,7 @@ export const getMyDrops = createAsyncThunk(
             return response.data;
          }
 
-         onFailure();
+         onFailure(response.message);
          throw Error(response.message);
       } catch (error: any) {
          return rejectWithValue(error.message);
@@ -116,7 +116,7 @@ export const removeDrop = createAsyncThunk(
             return response.data;
          }
 
-         onFailure();
+         onFailure(response.message);
          throw Error(response.message);
       } catch (error: any) {
          return rejectWithValue(error.message);

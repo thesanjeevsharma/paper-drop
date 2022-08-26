@@ -13,6 +13,7 @@ import {
 } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import Map, { Marker } from 'react-map-gl';
+import { toast } from 'react-toastify';
 
 import { AppDispatch } from 'src/store';
 import { dropMessage } from 'src/store/slices/drops';
@@ -55,9 +56,9 @@ const DropMessageForm = ({ isOpen, onClose }: Props) => {
          _onClose();
       };
 
-      const onFailure = () => {
+      const onFailure = (message: string) => {
          setIsInFlight(false);
-         console.log('Failed to drop message!');
+         toast.error(message);
       };
 
       const drop = {

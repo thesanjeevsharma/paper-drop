@@ -1,6 +1,7 @@
 import React, { FormEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, Button, Input } from '@chakra-ui/react';
+import { toast } from 'react-toastify';
 
 import { login } from 'src/store/slices/user';
 import { AppDispatch } from 'src/store';
@@ -17,14 +18,14 @@ const LoginForm = () => {
       e.preventDefault();
 
       const onSuccess = () => {};
-      const onFailure = () => console.log('Failed to login!');
+      const onFailure = (message: string) => toast.error(message);
 
       const data = { email, password };
       dispatch(login({ data, onSuccess, onFailure }));
    };
 
    return (
-      <Box maxW="420px">
+      <Box maxW="420px" px={4}>
          <form onSubmit={handleSubmit}>
             <Input
                placeholder="Email"
@@ -44,7 +45,6 @@ const LoginForm = () => {
                mb={4}
                bg="white"
                color="gray.700"
-               minLength={8}
                required
             />
 

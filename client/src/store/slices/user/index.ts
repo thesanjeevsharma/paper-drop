@@ -32,7 +32,7 @@ export const login = createAsyncThunk(
             return response.data;
          }
 
-         onFailure();
+         onFailure(response.message);
          throw Error(response.message);
       } catch (error: any) {
          return rejectWithValue(error.message);
@@ -51,7 +51,7 @@ export const signup = createAsyncThunk(
             return response.data;
          }
 
-         onFailure();
+         onFailure(response.message);
          throw Error(response.message);
       } catch (error: any) {
          return rejectWithValue(error.message);

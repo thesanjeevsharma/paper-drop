@@ -12,6 +12,7 @@ import {
    Text,
 } from '@chakra-ui/react';
 import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 
 import { selectRangeDrops } from 'src/store/slices/drops/selectors';
 import { getDistanceFromLatLon } from 'src/utils';
@@ -56,7 +57,7 @@ const RangeDropsList = ({ isOpen, onClose }: Props) => {
             })();
          } catch (err) {
             setSelectedDropId(null);
-            console.log(err);
+            toast.error('Something went wrong!');
          } finally {
             setIsInFlight(false);
          }

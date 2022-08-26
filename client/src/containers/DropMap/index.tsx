@@ -3,6 +3,7 @@ import Map, { Marker } from 'react-map-gl';
 import { Flex, Spinner } from '@chakra-ui/react';
 import mapboxgl from 'mapbox-gl';
 import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 
 import {
    selectCurrentLocation,
@@ -31,14 +32,14 @@ const DropMap = () => {
 
    const getDrops = React.useCallback(() => {
       const onSuccess = () => {};
-      const onFailure = () => console.log('Failed to fetch drops!');
+      const onFailure = (message: string) => toast.error(message);
 
       dispatch(getNearbyDrops({ onSuccess, onFailure }));
    }, [dispatch]);
 
    const getUserDrops = React.useCallback(() => {
       const onSuccess = () => {};
-      const onFailure = () => console.log('Failed to fetch your drops!');
+      const onFailure = (message: string) => toast.error(message);
 
       dispatch(getMyDrops({ onSuccess, onFailure }));
    }, [dispatch]);
@@ -69,7 +70,7 @@ const DropMap = () => {
       );
 
       const onSuccess = () => {};
-      const onFailure = () => console.log('Failed to delete drop!');
+      const onFailure = (message: string) => toast.error(message);
 
       if (isConfirmed) {
          dispatch(removeDrop({ dropId, onSuccess, onFailure }));

@@ -1,6 +1,7 @@
 import React, { FormEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, Button, Input } from '@chakra-ui/react';
+import { toast } from 'react-toastify';
 
 import { signup } from 'src/store/slices/user';
 import { AppDispatch } from 'src/store';
@@ -18,14 +19,14 @@ const SignUpForm = () => {
       e.preventDefault();
 
       const onSuccess = () => {};
-      const onFailure = () => console.log('Failed to create account!');
+      const onFailure = (message: string) => toast.error(message);
 
       const data = { email, password, name };
       dispatch(signup({ data, onSuccess, onFailure }));
    };
 
    return (
-      <Box maxW="420px">
+      <Box maxW="420px" px={4}>
          <form onSubmit={handleSubmit}>
             <Input
                placeholder="Name"
