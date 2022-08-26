@@ -31,7 +31,7 @@ app.use(express.json());
 // routes
 app.use('/api/users', UserRouter);
 app.use('/api/drops', DropRouter);
-app.get('/', (req, res) => {
+app.get('*', (_, res) => {
    res.sendFile('index.html');
 });
 
