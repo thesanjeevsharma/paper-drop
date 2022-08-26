@@ -16,6 +16,7 @@ import {
    selectRangeDrops,
 } from 'src/store/slices/drops/selectors';
 import { AppDispatch } from 'src/store';
+import { EmailIcon } from '@chakra-ui/icons';
 
 //@ts-ignore
 mapboxgl.workerClass =
@@ -90,7 +91,9 @@ const DropMap = () => {
                      latitude={drop.location.latitude}
                      anchor="bottom"
                      onClick={() => deleteDrop(drop._id)}
-                  />
+                  >
+                     <EmailIcon h={5} w={5} color="green.600" />
+                  </Marker>
                ))}
             </>
          );
@@ -106,7 +109,9 @@ const DropMap = () => {
                   longitude={drop.location.longitude}
                   latitude={drop.location.latitude}
                   anchor="bottom"
-               />
+               >
+                  <EmailIcon h={5} w={5} color="purple.600" />
+               </Marker>
             ))}
             {nearbyDrops.map((drop) => (
                <Marker
@@ -115,7 +120,9 @@ const DropMap = () => {
                   longitude={drop.location.longitude}
                   latitude={drop.location.latitude}
                   anchor="bottom"
-               />
+               >
+                  <EmailIcon h={5} w={5} color="gray.600" />
+               </Marker>
             ))}
          </>
       );
