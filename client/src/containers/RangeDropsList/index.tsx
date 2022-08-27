@@ -84,20 +84,46 @@ const RangeDropsList = ({ isOpen, onClose }: Props) => {
                   </Box>
                ) : (
                   <ModalBody>
-                     <Text>Author: {selectedDrop.author}</Text>
-                     {!!selectedDrop.createdAt && (
-                        <Text>
-                           Dropped:{' '}
-                           <ReactTimeAgo
-                              date={new Date(selectedDrop.createdAt)}
-                              locale="en-US"
-                           />
-                        </Text>
-                     )}
-                     <Text fontWeight="semibold">
-                        Read by: {selectedDrop.readBy}
+                     <Text fontSize="sm" fontWeight="semibold" color="gray">
+                        Author
                      </Text>
-                     <Text my={8} fontSize="xl">
+                     <Text>{selectedDrop.author}</Text>
+                     {!!selectedDrop.createdAt && (
+                        <>
+                           <Text
+                              mt={2}
+                              fontSize="sm"
+                              fontWeight="semibold"
+                              color="gray"
+                           >
+                              Dropped
+                           </Text>
+                           <Text>
+                              <ReactTimeAgo
+                                 date={new Date(selectedDrop.createdAt)}
+                                 locale="en-US"
+                              />
+                           </Text>
+                        </>
+                     )}
+                     <Text
+                        mt={2}
+                        fontSize="sm"
+                        fontWeight="semibold"
+                        color="gray"
+                     >
+                        Read by
+                     </Text>
+                     <Text>{selectedDrop.readBy}</Text>
+                     <Text
+                        mt={8}
+                        fontSize="sm"
+                        fontWeight="semibold"
+                        color="gray"
+                     >
+                        Message
+                     </Text>
+                     <Text mb={2} fontSize="md">
                         {selectedDrop.message}
                      </Text>
                   </ModalBody>
