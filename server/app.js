@@ -24,7 +24,7 @@ require('./redis');
 
 // middlewares
 app.use(express.static(__dirname + '/build'));
-// app.use(logger('dev'));
+app.use(logger('dev'));
 app.use(cors());
 app.use(express.json());
 
@@ -32,7 +32,7 @@ app.use(express.json());
 app.use('/api/users', UserRouter);
 app.use('/api/drops', DropRouter);
 app.get('*', (_, res) => {
-   res.sendFile('index.html');
+   res.sendFile('build/index.html', { root: __dirname });
 });
 
 // error handler
