@@ -11,6 +11,7 @@ Instructions:
 - Happy hunting! :)
 
 🌏 Live link: [https://devdevgo.site](https://devdevgo.site)
+⚠️ Use the app on phone for best experience!
 
 
 ### Screenshots
@@ -19,14 +20,6 @@ Instructions:
 ![Playground Page](https://i.imgur.com/xADKcQj.png)
 ![Architecture](https://i.imgur.com/zhUSwPW.png)
 
-# Overview video (Optional)
-
-Here's a short video that explains the project and how it uses Redis:
-
-[Insert your own video here, and remove the one below]
-
-[![Embed your YouTube video](https://i.ytimg.com/vi/vyxdC1qK4NE/maxresdefault.jpg)](https://www.youtube.com/watch?v=vyxdC1qK4NE)
-
 ## How it works
 
 Since the main focus of the app are message drops(or just drops), I'll mainly focus on that.
@@ -34,7 +27,8 @@ Since the main focus of the app are message drops(or just drops), I'll mainly fo
 ### How the data is stored:
 
 A drop document in MongoDB looks like this:
-```ts
+```js
+{  
    _id: ObjectId,
    user: ObjectId,
    message: string,
@@ -48,17 +42,18 @@ A drop document in MongoDB looks like this:
    isDeleted: boolean,
    createdAt: Date,
    updatedAt: Date
+}
 ```
 
 Whenever a drop is created it is stored in MongoDB. But at the same time the `_id`/ and the `location` is also stored in redis.
 
 Redis query:
 ```js
-   await redisClient.geoAdd('drops', {
-         longitude,
-         latitude,
-         member: drop.id,
-   });
+await redisClient.geoAdd('drops', {
+   longitude,
+   latitude,
+   member: drop.id,
+});
 ```
 
 Notice the use of `id` instead of `_id`, that's because I get a lean doc after saving to MongoDB which is more performant.
